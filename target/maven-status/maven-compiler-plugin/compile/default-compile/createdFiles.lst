@@ -1,0 +1,9 @@
+org\catdou\param\generate\config\RequestMethodProvider.class
+org\catdou\param\generate\enums\FileType.class
+org\catdou\param\generate\model\UrlMethod.class
+org\catdou\param\generate\config\ApiData.class
+org\catdou\param\generate\core\json\JsonGenerator.class
+org\catdou\param\generate\constant\ParamValidatorGenConstant.class
+org\catdou\param\generate\model\GenerateParam.class
+org\catdou\param\generate\core\xml\XmlGenerator.class
+org\catdou\param\generate\core\BaseGenerator.class
