@@ -1,4 +1,4 @@
-package org.catdou.param.generate.core.xml.str;
+package org.catdou.param.generate.core.json;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;

@@ -9,6 +9,7 @@ import org.catdou.param.generate.constant.ParamValidatorGenConstant;
 import org.catdou.param.generate.core.BaseGenerator;
 import org.catdou.param.generate.model.GenerateParam;
 import org.catdou.param.generate.model.UrlMethod;
+import org.catdou.param.generate.utils.GenFileUtils;
 import org.catdou.validate.constant.ParamValidatorConstants;
 import org.catdou.validate.log.ValidatorLog;
 import org.catdou.validate.log.ValidatorLogFactory;
@@ -31,6 +32,7 @@ public class JsonGenerator implements BaseGenerator {
 
     @Override
     public void generate(GenerateParam generateParam) {
+        GenFileUtils.createDir(generateParam.getParentPath());
         Map<String, List<UrlMethod>> beanUrlMap = ApiData.getBeanUrlMap();
         Set<Map.Entry<String, List<UrlMethod>>> entrySet = beanUrlMap.entrySet();
         for (Map.Entry<String, List<UrlMethod>> entry : entrySet) {

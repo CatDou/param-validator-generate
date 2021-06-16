@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<users type="list">
+<user name="scd" sex="male">
+<common>
+<text>文本</text>
+</common>
+</user>
+<user name="chengdu" sex="male"/>
+</users>

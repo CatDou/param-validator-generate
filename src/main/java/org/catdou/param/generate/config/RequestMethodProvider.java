@@ -22,10 +22,9 @@ public class RequestMethodProvider {
 
     public RequestMethodProvider(List<RequestMappingInfoHandlerMapping> handlerMappings) {
         this.handlerMappings = handlerMappings;
-        initHandlerMapping(handlerMappings);
     }
 
-    private void initHandlerMapping(List<RequestMappingInfoHandlerMapping> handlerMappings) {
+    public void initHandlerMapping() {
         Map<String, List<UrlMethod>> beanUrlMap = new HashMap<>();
         for (RequestMappingInfoHandlerMapping handlerMapping : handlerMappings) {
             Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = handlerMapping.getHandlerMethods();
