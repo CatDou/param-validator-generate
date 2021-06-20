@@ -1,24 +1,15 @@
 package org.catdou.param.generate.core.json;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.catdou.param.generate.config.ApiData;
-import org.catdou.param.generate.constant.ParamValidatorGenConstant;
 import org.catdou.param.generate.core.BaseGenerator;
 import org.catdou.param.generate.model.GenerateParam;
 import org.catdou.param.generate.model.UrlMethod;
 import org.catdou.param.generate.utils.GenFileUtils;
-import org.catdou.validate.constant.ParamValidatorConstants;
 import org.catdou.validate.log.ValidatorLog;
 import org.catdou.validate.log.ValidatorLogFactory;
 import org.catdou.validate.model.config.Param;
 import org.catdou.validate.model.config.UrlRuleBean;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +18,8 @@ import java.util.Set;
 /**
  * @author James
  */
-public class JsonGenerator implements BaseGenerator {
-    private ValidatorLog LOG = ValidatorLogFactory.getLogger(JsonGenerator.class);
+public class JsonGeneratorWithSwagger extends JsonGenerator implements BaseGenerator {
+    private ValidatorLog LOG = ValidatorLogFactory.getLogger(JsonGeneratorWithSwagger.class);
 
     @Override
     public void generate(GenerateParam generateParam) {
@@ -43,23 +34,29 @@ public class JsonGenerator implements BaseGenerator {
                 UrlRuleBean urlRuleBean = new UrlRuleBean();
                 urlRuleBean.setUrl(urlMethod.getUrl());
                 urlRuleBean.setMethod(urlMethod.getMethod());
-                urlRuleBean.setUrlParams(new ArrayList<>());
-                urlRuleBean.setPathParams(new ArrayList<>());
-                urlRuleBean.setBodyParams(new ArrayList<>());
+                List<Param> urlParamList = new ArrayList<>();
+                List<Param> pathParamList = new ArrayList<>();
+                List<Param> bodyParamList = new ArrayList<>();
+                convertStrToParam(urlMethod.getQueryPramList(), urlParamList);
+                convertStrToParam(urlMethod.getPathParamList(), pathParamList);
+                convertStrToParam(urlMethod.getBodyParamList(), bodyParamList);
+                urlRuleBean.setUrlParams(urlParamList);
+                urlRuleBean.setPathParams(pathParamList);
+                urlRuleBean.setBodyParams(bodyParamList);
                 urlRuleBeanList.add(urlRuleBean);
             }
             writeJsonToFile(generateParam, beanName, urlRuleBeanList);
         }
     }
 
-    public void writeJsonToFile(GenerateParam generateParam, String beanName, List<UrlRuleBean> urlRuleBeanList) {
-        String json = JSON.toJSONString(urlRuleBeanList, SerializerFeature.PrettyFormat);
-        String fileName = ParamValidatorConstants.CHECK_RULE_NAME + beanName + ParamValidatorGenConstant.FILE_TYPE_JSON;
-        String filePath = generateParam.getParentPath() + File.separator + fileName;
-        try {
-            FileUtils.write(new File(filePath), json, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            LOG.error("write json to file error " + ExceptionUtils.getStackTrace(e));
+    private void convertStrToParam(Set<String> strParamList, List<Param> paramList) {
+        for (String queryParam : strParamList) {
+            Param param = new Param();
+            param.setName(queryParam);
+            param.setRules(new ArrayList<>());
+            paramList.add(param);
         }
     }
+
+
 }

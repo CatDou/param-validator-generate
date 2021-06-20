@@ -7,6 +7,7 @@ import org.catdou.param.generate.model.GenerateParam;
 import org.catdou.param.generate.model.UrlMethod;
 import org.catdou.param.generate.utils.GenFileUtils;
 import org.catdou.validate.constant.ParamValidatorConstants;
+import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -18,8 +19,7 @@ import java.util.Set;
 /**
  * @author James
  */
-public class XmlGenerator implements BaseGenerator {
-
+public class XmlGeneratorWithSwagger extends XmlGenerator implements BaseGenerator {
     @Override
     public void generate(GenerateParam generateParam) {
         GenFileUtils.createDir(generateParam.getParentPath());
@@ -32,6 +32,9 @@ public class XmlGenerator implements BaseGenerator {
             List<UrlMethod> urlMethodList = entry.getValue();
             for (UrlMethod urlMethod : urlMethodList) {
                 Element item = document.createElement("item");
+                appendParamNode(document, item, urlMethod.getQueryPramList(), "urlParams");
+                appendParamNode(document, item, urlMethod.getPathParamList(), "pathParams");
+                appendParamNode(document, item, urlMethod.getBodyParamList(), "bodyParams");
                 item.setAttribute("url", urlMethod.getUrl());
                 item.setAttribute("method", urlMethod.getMethod());
                 urls.appendChild(item);
@@ -41,9 +44,17 @@ public class XmlGenerator implements BaseGenerator {
         }
     }
 
-    public void writeDataToXml(GenerateParam generateParam, String beanName, Document document) {
-        String fileName = ParamValidatorConstants.CHECK_RULE_NAME + beanName + ParamValidatorGenConstant.FILE_TYPE_XML;
-        String filePath = generateParam.getParentPath() + File.separator + fileName;
-        XmlTransformer.transFormDocument(document, filePath);
+    private void appendParamNode(Document document, Element item, Set<String> queryParamList, String nodeName) {
+        if (!CollectionUtils.isEmpty(queryParamList)) {
+           Element urlParamEle = document.createElement(nodeName);
+           for (String paramName : queryParamList) {
+               Element paramElem = document.createElement("param");
+               paramElem.setAttribute("name", paramName);
+               Element ruleElm = document.createElement("rules");
+               paramElem.appendChild(ruleElm);
+               urlParamEle.appendChild(paramElem);
+               item.appendChild(urlParamEle);
+           }
+        }
     }
 }
